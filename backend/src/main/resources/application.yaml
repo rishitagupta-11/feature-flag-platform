@@ -3,18 +3,36 @@ spring:
     name: feature-flag-platform
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/feature_flag_db
-    username: featureflag
-    password: local_dev_password
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/feature_flag_db}
+    username: ${DB_USERNAME:featureflag}
+    password: ${DB_PASSWORD:local_dev_password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:2000ms}
+
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: never
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
