@@ -63,7 +63,7 @@ function App() {
   };
 
   useEffect(() => {
-    void fetchFlags();
+    fetchFlags().catch(console.error);
   }, []);
 
   const getErrorMessage = (err, fallback) =>
