@@ -63,7 +63,30 @@ function App() {
   };
 
   useEffect(() => {
-    fetchFlags().catch(console.error);
+    let ignore = false;
+
+    const loadInitialFlags = async () => {
+      try {
+        const data = await getFlags();
+        if (!ignore) setFlags(data);
+      } catch (err) {
+        console.error('Failed to fetch flags:', err);
+        if (!ignore) {
+          setError(
+              err.response?.data?.message ||
+              'Failed to load feature flags. Please try again.'
+          );
+        }
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    };
+
+    void loadInitialFlags();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const getErrorMessage = (err, fallback) =>
